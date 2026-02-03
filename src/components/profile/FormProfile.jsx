@@ -1,7 +1,7 @@
-// Front-Dental-Bosch/src/components/profile/FormProfile.jsx
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { Button } from '../ui/index.js';
 
 const FormProfile = ({ doctor, onActualizar }) => {
   const [form, setForm] = useState({
@@ -59,15 +59,7 @@ const FormProfile = ({ doctor, onActualizar }) => {
         return;
       }
 
-      const backendUrl = import.meta.env.VITE_BACKEND_URL;
-      
-      if (!backendUrl) {
-        toast.error('Error de configuración: VITE_BACKEND_URL no está definido');
-        console.error("❌ VITE_BACKEND_URL:", backendUrl);
-        return;
-      }
-
-      const url = `${backendUrl}/doctor/actualizarperfil/${doctor._id}`;
+      const url = `${import.meta.env.VITE_API_URL}/api/doctor/actualizarperfil/${doctor._id}`;
       
       console.log("📡 Actualizando perfil en:", url);
       console.log("📝 Datos a enviar:", form);
@@ -81,7 +73,8 @@ const FormProfile = ({ doctor, onActualizar }) => {
 
       console.log("✅ Respuesta del servidor:", data);
 
-      toast.success(data.msg || 'Perfil actualizado correctamente');
+      // Mostrar notificación de éxito mejorada
+      toast.success('✅ ¡Perfil actualizado correctamente! 🎉');
       
       // Actualizar datos en localStorage
       if (data.doctor) {
@@ -187,13 +180,9 @@ const FormProfile = ({ doctor, onActualizar }) => {
       </div>
 
       {/* BOTÓN */}
-      <button
-        type="submit"
-        className="bg-[#f47cc6] w-full p-2 text-white uppercase font-bold rounded-lg
-                   hover:bg-[#e96ab6] cursor-pointer transition-all shadow-md"
-      >
-        Actualizar
-      </button>
+      <Button type="submit" className="w-full">
+        Actualizar Perfil
+      </Button>
     </form>
   );
 };

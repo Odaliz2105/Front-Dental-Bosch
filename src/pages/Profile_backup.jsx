@@ -4,24 +4,17 @@ import { doctorService } from '../services/authService.js';
 import { toast } from 'react-toastify';
 import { Button, Card, Loading } from '../components/ui/index.js';
 import { FaUser, FaEdit, FaCheckCircle, FaClock, FaIdCard, FaKey } from 'react-icons/fa';
-import { CardProfile } from '../components/profile/CardProfile.jsx';
-import FormProfile from '../components/profile/FormProfile.jsx';
-import CardPassword from '../components/profile/CardPassword.jsx';
 
 const Profile = () => {
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
   const navigate = useNavigate();
 
   const fetchProfile = useCallback(async () => {
     try {
       const response = await doctorService.getPerfil();
-      
-      // La respuesta directa contiene los datos del doctor
-      const doctorData = response.doctor || response;
-      setDoctor(doctorData);
+      setDoctor(response.doctor);
     } catch (error) {
       toast.error('Error al cargar el perfil');
       console.error('Error:', error);
@@ -36,12 +29,6 @@ const Profile = () => {
       setHasLoaded(true);
     }
   }, [hasLoaded, fetchProfile]);
-
-  const handleActualizar = () => {
-    fetchProfile();
-    setEditing(false);
-    toast.success('Perfil actualizado correctamente');
-  };
 
   if (loading) {
     return <Loading size="lg" text="Cargando perfil..." />;
@@ -64,9 +51,9 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
+          {/* Header */}
           <div className="bg-gradient-to-r from-teal-600 to-blue-700 px-6 py-8">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-6">
@@ -94,54 +81,55 @@ const Profile = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex space-x-3">
-                {!editing && (
-                  <Button onClick={() => setEditing(true)}>
-                    <FaEdit className="mr-2" />
-                    Editar Perfil
-                  </Button>
-                )}
-                {editing && (
-                  <Button onClick={() => setEditing(false)} variant="secondary">
-                    Cancelar
-                  </Button>
-                )}
-              </div>
             </div>
           </div>
-        </div>
 
-        {/* Content Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Left Column - Profile Info */}
-          <div className="space-y-6">
-            {editing ? (
-              <Card>
-                <Card.Header>
-                  <h3 className="text-lg font-semibold text-gray-900">Editar Información</h3>
-                </Card.Header>
-                <Card.Body>
-                  <FormProfile doctor={doctor} onActualizar={handleActualizar} />
-                </Card.Body>
-              </Card>
-            ) : (
-              <CardProfile doctor={doctor} />
-            )}
-          </div>
-
-          {/* Right Column - Password Change */}
-          <div className="space-y-6">
-            <Card>
-              <Card.Header>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  <FaKey className="inline mr-2" />
-                  Cambiar Contraseña
-                </h3>
-              </Card.Header>
-              <Card.Body>
-                <CardPassword />
-              </Card.Body>
-            </Card>
+          {/* Content */}
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <FaUser className="inline mr-1" /> Nombre
+                </label>
+                <p className="text-lg text-gray-900">{doctor.nombre}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  <FaUser className="inline mr-1" /> Apellido
+                </label>
+                <p className="text-lg text-gray-900">{doctor.apellido}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  📧 Email
+                </label>
+                <p className="text-lg text-gray-900">{doctor.email}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  🏥 Especialidad
+                </label>
+                <p className="text-lg text-gray-900">{doctor.especialidad}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  📞 Teléfono
+                </label>
+                <p className="text-lg text-gray-900">{doctor.telefono}</p>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  📍 Dirección
+                </label>
+                <p className="text-lg text-gray-900">{doctor.direccion}</p>
+              </div>
+            </div>
+            
+            <div className="mt-8 flex justify-center">
+              <Button onClick={() => navigate('/dashboard-doctor')}>
+                Volver al Dashboard
+              </Button>
+            </div>
           </div>
         </div>
       </div>

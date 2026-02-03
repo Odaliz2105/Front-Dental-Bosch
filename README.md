@@ -1,42 +1,16 @@
-# Front-Dental-Bosch
+# React + Vite
 
-Frontend del proyecto **Consultorio Dental Bosch** desarrollado con **Vite**, **React** y **Tailwind CSS**.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
----
+Currently, two official plugins are available:
 
-## 🔹 Tecnologías utilizadas
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-- **React** – Librería para construir la interfaz.  
-- **Vite** – Build tool y servidor de desarrollo rápido.  
-- **Tailwind CSS** – Framework de estilos utilitarios.  
-- **JavaScript / JSX** – Lógica de componentes.  
-- **Render** – Plataforma para desplegar el frontend.
+## React Compiler
 
----
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## 🔹 Estructura del proyecto
+## Expanding the ESLint configuration
 
-<img width="450" height="459" alt="image" src="https://github.com/user-attachments/assets/07604a51-b618-46f7-a027-6ebcb30bb6ba" />
-
----
-
-## 🔹 Variables de entorno
-
-Para que el frontend funcione correctamente, se deben configurar las siguientes variables en `.env` o en la plataforma de despliegue:
-
-```env
-VITE_API_URL=https://backend-dental-bosch.onrender.com
-VITE_BACKEND_URL=https://backend-dental-bosch.onrender.com
-VITE_GOOGLE_MAPS_API_KEY=TU_API_KEY_DE_GOOGLE
-
-# Instalar dependencias
-npm install
-
-# Iniciar servidor de desarrollo (solo local)
-npm run dev
-
-# Generar build para producción
-npm run build
-
-# Previsualizar el build local
-npm run preview
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

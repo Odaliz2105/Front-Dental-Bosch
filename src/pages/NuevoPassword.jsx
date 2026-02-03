@@ -1,7 +1,7 @@
 // Front-Dental-Bosch/src/pages/NuevoPassword.jsx
 import { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { doctorService } from '../services/authService.js';
 import logo from '../assets/DentalBosch.png';
 
 export const NuevoPassword = () => {
@@ -18,8 +18,7 @@ export const NuevoPassword = () => {
   useEffect(() => {
     const verificarToken = async () => {
       try {
-        const url = `${import.meta.env.VITE_BACKEND_URL}/doctor/recuperarPassword/${token}`;
-        const { data } = await axios.get(url);
+        const data = await doctorService.comprobarTokenPassword(token);
         
         setTokenValido(true);
         setMensaje({
@@ -69,8 +68,7 @@ export const NuevoPassword = () => {
     }
 
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/doctor/nuevoPassword/${token}`;
-      const { data } = await axios.post(url, { password });
+      const data = await doctorService.crearNuevoPassword(token, password);
       
       setMensaje({
         tipo: 'success',

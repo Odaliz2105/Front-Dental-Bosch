@@ -1,85 +1,41 @@
-import React, { useState } from "react";
-import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
-import { useAuthDoctor } from '../context/storeAuth.jsx';
-import dentalBosch8 from "../assets/DentalBosch.png";
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthPaciente } from '../../context/storeAuthPaciente.jsx';
+import dentalBosch from '../../assets/DentalBosch.png';
 
-export default function Login() {
+const LoginPaciente = () => {
   const navigate = useNavigate();
-  const { loginDoctor } = useAuthDoctor();
-
-  // ESTADOS LOCALES
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [emailError, setEmailError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
+  const { loginPaciente } = useAuthPaciente();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // REGEX PARA VALIDAR EMAIL
-  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-
-  // FUNCION PARA VALIDAR CAMPOS
-  const validarCampos = () => {
-    let ok = true;
-    setEmailError("");
-    setPasswordError("");
-
-    if (!email.trim()) {
-      setEmailError("El correo electrónico es requerido");
-      ok = false;
-    } else if (!emailRegex.test(email.trim())) {
-      setEmailError("Correo electrónico inválido");
-      ok = false;
-    }
-
-    if (!password.trim()) {
-      setPasswordError("La contraseña es requerida");
-      ok = false;
-    } else if (password.trim().length < 6) {
-      setPasswordError("La contraseña debe tener al menos 6 caracteres");
-      ok = false;
-    }
-
-    return ok;
-  };
-
-  // FUNCION PARA ENVIAR FORMULARIO
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!validarCampos()) return;
-
     setLoading(true);
 
     try {
-      const result = await loginDoctor(email.trim(), password.trim());
+      const result = await loginPaciente(email, password);
       
       if (result.success) {
-        setTimeout(() => navigate("/dashboard-doctor"), 800);
+        setTimeout(() => navigate('/dashboard-paciente'), 800);
       }
     } catch (err) {
-      console.error("Error en login:", err);
+      console.error("Error en login paciente:", err);
       
       // Verificar si el error es por rol incorrecto
-      if (err.response?.data?.msg?.includes("paciente") || 
+      if (err.response?.data?.msg?.includes("doctor") || 
           err.response?.data?.msg?.includes("rol")) {
         // Mostrar alerta específica para rol incorrecto
-        if (window.confirm("Parece que eres un paciente. ¿Deseas redirigirte al login de pacientes?")) {
-          navigate("/paciente/login");
+        if (window.confirm("Parece que eres un doctor. ¿Deseas redirigirte al login de doctores?")) {
+          navigate("/login");
         }
       }
-    } finally {
-      setLoading(false);
     }
+    
+    setLoading(false);
   };
 
-  // Función para redirigir al home cuando se hace clic en la imagen
-  const goToHome = () => {
-    navigate("/");
-  };
-
-  // RENDERIZADO DEL JSX
   return (
     <div className="min-h-screen flex flex-col bg-[#F0F2F5] font-sans m-0 p-0">
       {/* HEADER */}
@@ -90,10 +46,9 @@ export default function Login() {
         <div className="w-full max-w-[536px]">
           {/* LOGO + TITULO */}
           <div className="flex items-center gap-6 mb-8 max-[768px]:flex-col max-[768px]:text-center">
-            {/* Imagen clickeable que redirige al home */}
-            <button onClick={goToHome}>
+            <button onClick={() => navigate("/")}>
               <img
-                src={dentalBosch8}
+                src={dentalBosch}
                 className="w-[64px] h-[64px] object-contain"
                 alt="Dental Bosch"
               />
@@ -107,10 +62,9 @@ export default function Login() {
           {/* CARD DEL FORMULARIO */}
           <div className="bg-white p-12 rounded-[30px] shadow-lg max-[768px]:p-8">
             <h2 className="text-center font-bold text-[2.5rem] mb-10 text-[#1a1a1a] max-[768px]:text-[2rem]">
-              INICIO DE SESIÓN DOCTOR
+              PORTAL PACIENTES
             </h2>
 
-            {/* FORMULARIO */}
             <form onSubmit={handleSubmit} className="flex flex-col gap-[25px]">
               {/* EMAIL */}
               <div>
@@ -120,42 +74,20 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="w-full h-[38px] bg-[#EAEAEA] text-[#606770] rounded-[15px] px-4 text-[1rem] focus:outline-none"
+                  required
                 />
-                {emailError && (
-                  <p className="font-semibold text-sm mt-1" style={{ color: 'var(--rojo-error)' }}>
-                    {emailError}
-                  </p>
-                )}
               </div>
 
               {/* PASSWORD */}
               <div>
-                <div className="flex items-center gap-2">
-                  {/* Botón mostrar/ocultar a la izquierda */}
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="flex items-center justify-center h-[38px] w-[38px] text-[1.4rem] text-[#606770] hover:text-[#F47CC6] rounded-[15px] bg-[#EAEAEA]"
-                  >
-                    {showPassword ? <MdVisibilityOff /> : <MdVisibility />}
-                  </button>
-
-                  {/* Input de contraseña */}
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Contraseña"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="flex-1 h-[38px] bg-[#EAEAEA] text-[#606770] rounded-[15px] px-4 text-[1rem] focus:outline-none"
-                  />
-                </div>
-
-                {/* Mostrar mensaje de error de contraseña */}
-                {passwordError && (
-                  <p className="font-semibold text-sm mt-1" style={{ color: 'var(--rojo-error)'}}>
-                    {passwordError}
-                  </p>
-                )}
+                <input
+                  type="password"
+                  placeholder="Contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full h-[38px] bg-[#EAEAEA] text-[#606770] rounded-[15px] px-4 text-[1rem] focus:outline-none"
+                  required
+                />
               </div>
 
               {/* BOTÓN INGRESAR */}
@@ -167,18 +99,7 @@ export default function Login() {
                 {loading ? "Ingresando..." : "Ingresar"}
               </button>
 
-              {/* ENLACE OLVIDASTE TU CONTRASEÑA */}
-              <div className="text-center -mt-3">
-                <button
-                  type="button"
-                  onClick={() => navigate("/recuperar-password")}
-                  className="text-[#606770] hover:text-[#F47CC6] text-sm font-medium transition-colors bg-transparent border-0 cursor-pointer"
-                >
-                  ¿Olvidaste tu contraseña?
-                </button>
-              </div>
-
-              {/* BOTÓN CREAR CUENTA */}
+              {/* BOTÓN REGISTRO */}
               <button
                 type="button"
                 onClick={() => navigate("/crear-cuenta")}
@@ -187,13 +108,13 @@ export default function Login() {
                 Crear una cuenta
               </button>
 
-              {/* BOTÓN LOGIN PACIENTE */}
+              {/* BOTÓN LOGIN DOCTOR */}
               <button
                 type="button"
-                onClick={() => navigate("/paciente/login")}
+                onClick={() => navigate("/login")}
                 className="w-full h-[38px] bg-[#606770] text-white font-semibold text-[1rem] rounded-[15px] border-2 border-[#606770] hover:opacity-80"
               >
-                Soy Paciente
+                Soy Doctor
               </button>
 
               {/* SEPARADOR */}
@@ -244,4 +165,6 @@ export default function Login() {
       </footer>
     </div>
   );
-}
+};
+
+export default LoginPaciente;

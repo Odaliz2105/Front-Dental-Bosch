@@ -1,34 +1,81 @@
-// src/context/storeAuth.js
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { doctorService } from "../services/authService.js";
+import { toast } from 'react-toastify';
 
-const AuthContext = createContext();
+const AuthDoctorContext = createContext();
 
-export const AuthProvider = ({ children }) => {
-  const [auth, setAuth] = useState({
+export const useAuthDoctor = () => {
+  const context = useContext(AuthDoctorContext);
+  if (!context) {
+    throw new Error('useAuthDoctor debe usarse dentro de AuthDoctorProvider');
+  }
+  return context;
+};
+
+export const AuthDoctorProvider = ({ children }) => {
+  const [authDoctor, setAuthDoctor] = useState({
     token: localStorage.getItem("token") || null,
     doctor: JSON.parse(localStorage.getItem("doctor") || "null"),
   });
+  const [loading, setLoading] = useState(true);
 
-  const login = (token, doctor) => {
-    setAuth({ token, doctor });
-    localStorage.setItem("token", token);
-    localStorage.setItem("doctor", JSON.stringify(doctor));
+  const verificarToken = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    
+    if (token) {
+      try {
+        // Verificar token con el backend
+        const data = await doctorService.getPerfil();
+        setAuthDoctor({ token, doctor: data });
+      } catch (error) {
+        console.error('Token inválido:', error);
+        localStorage.removeItem("token");
+        localStorage.removeItem("doctor");
+        setAuthDoctor({ token: null, doctor: null });
+        toast.error('Sesión expirada, por favor inicia sesión nuevamente');
+      }
+    }
+    setLoading(false); // Siempre ejecutar esto, haya token o no
+  }, []);
+
+  useEffect(() => {
+    verificarToken();
+  }, [verificarToken]);
+
+  const loginDoctor = async (email, password) => {
+    try {
+      const data = await doctorService.login(email, password);
+      
+      // Guardar en localStorage y estado
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("doctor", JSON.stringify(data.doctor));
+      
+      setAuthDoctor({ token: data.token, doctor: data.doctor });
+      
+      toast.success('¡Bienvenido Doctor!');
+      return { success: true, data };
+    } catch (error) {
+      const message = error.response?.data?.msg || 'Error al iniciar sesión';
+      toast.error(message);
+      return { success: false, message };
+    }
   };
 
-  const logout = () => {
-    setAuth({ token: null, doctor: null });
+  const logoutDoctor = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("doctor");
+    setAuthDoctor({ token: null, doctor: null });
+    toast.info('Sesión cerrada');
   };
 
   return (
-    <AuthContext.Provider value={{ auth, login, logout }}>
+    <AuthDoctorContext.Provider value={{
+      authDoctor,
+      loginDoctor,
+      logoutDoctor,
+      loading
+    }}>
       {children}
-    </AuthContext.Provider>
+    </AuthDoctorContext.Provider>
   );
 };
-
-// Hook para usar el context
-export default function useStoreAuth() {
-  return useContext(AuthContext);
-}

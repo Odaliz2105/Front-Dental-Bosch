@@ -1,7 +1,7 @@
 // src/pages/RecuperarPassword.jsx
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import { doctorService } from '../services/authService.js';
 import logo from '../assets/DentalBosch.png';
 
 export const RecuperarPassword = () => {
@@ -20,8 +20,7 @@ export const RecuperarPassword = () => {
     }
 
     try {
-      const url = `${import.meta.env.VITE_BACKEND_URL}/doctor/recuperarPassword`;
-      const { data } = await axios.post(url, { email });
+      const data = await doctorService.recuperarPassword(email);
       
       setMensaje({
         tipo: 'success',
