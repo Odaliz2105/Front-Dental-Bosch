@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 // Configuración base de axios
+console.log('VITE_BACKEND_URL:', import.meta.env.VITE_BACKEND_URL);
 const api = axios.create({
   baseURL: import.meta.env.VITE_BACKEND_URL,
   timeout: 10000,
@@ -12,6 +13,7 @@ const api = axios.create({
 // Interceptor para agregar token JWT
 api.interceptors.request.use(
   (config) => {
+    console.log('Request URL:', config.baseURL + config.url);
     const token = localStorage.getItem('token') || localStorage.getItem('tokenPaciente');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
