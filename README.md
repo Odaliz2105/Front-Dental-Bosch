@@ -8,44 +8,32 @@ Este repositorio contiene el componente frontend del Sistema Web Odontológico D
 
 El frontend permite a los doctores y pacientes interactuar con el sistema de forma intuitiva, segura y eficiente, facilitando la gestión de pacientes, historias clínicas, odontogramas, citas e inventario odontológico, mediante el consumo de servicios REST proporcionados por el backend.
 
+
 🎯 Objetivo del frontend
 
-Desarrollar una interfaz web moderna que permita:
-
-Gestionar pacientes y sus historias clínicas.
-
-Visualizar y registrar odontogramas digitales.
-
-Administrar citas odontológicas.
-
-Controlar el inventario de insumos odontológicos.
-
-Consumir endpoints del backend de forma segura.
-
-Brindar una experiencia de usuario clara, responsiva y accesible.
+-Desarrollar una interfaz web moderna que permita:
+-Gestionar pacientes y sus historias clínicas.
+-Visualizar y registrar odontogramas digitales.
+-Administrar citas odontológicas.
+-Controlar el inventario de insumos odontológicos.
+-Consumir endpoints del backend de forma segura.
+-Brindar una experiencia de usuario clara, responsiva y accesible.
 
 👥 Roles del sistema
 👩‍⚕️ Doctor
 
-Iniciar sesión y gestionar perfil.
-
-Registrar y administrar pacientes.
-
-Gestionar citas odontológicas.
-
-Registrar tratamientos y odontogramas.
-
-Controlar inventario odontológico.
+-Iniciar sesión y gestionar perfil.
+-Registrar y administrar pacientes.
+-Gestionar citas odontológicas.
+-Registrar tratamientos y odontogramas.
+-Controlar inventario odontológico.
 
 🧑 Paciente
 
-Iniciar sesión.
-
-Visualizar citas programadas.
-
-Consultar historial clínico y odontograma.
-
-Cancelar y calificar citas.
+-Iniciar sesión.
+-Visualizar citas programadas.
+-Consultar historial clínico y odontograma.
+-Cancelar y calificar citas.
 
 🛠️ Tecnologías utilizadas
 Herramienta	Descripción
@@ -57,32 +45,18 @@ Axios	Cliente HTTP para consumo de APIs REST
 React Router DOM	Manejo de rutas públicas y privadas
 React Toastify	Notificaciones visuales para el usuario
 Lucide React / React Icons	Iconografía del sistema
-🧱 Arquitectura
 
+🧱 Arquitectura
 El frontend sigue el patrón arquitectónico Modelo – Vista – Controlador (MVC) adaptado a React:
 
-Modelo: Gestión del estado y datos consumidos desde el backend.
+-Modelo: Gestión del estado y datos consumidos desde el backend.
+-Vista: Componentes visuales (interfaces y pantallas).
+-Controlador: Lógica de interacción, consumo de endpoints y validaciones.
+-Esta arquitectura facilita la escalabilidad, mantenimiento y comprensión del sistema.
 
-Vista: Componentes visuales (interfaces y pantallas).
+<img width="399" height="280" alt="image" src="https://github.com/user-attachments/assets/ae8bd64a-98bf-48e4-8e63-db4cf63b8ed9" />
+<img width="399" height="280" alt="image" src="https://github.com/user-attachments/assets/ae8bd64a-98bf-48e4-8e63-db4cf63b8ed9" />
 
-Controlador: Lógica de interacción, consumo de endpoints y validaciones.
-
-Esta arquitectura facilita la escalabilidad, mantenimiento y comprensión del sistema.
-
-📂 Estructura del proyecto
-src/
-│
-├── api/            # Configuración de Axios y endpoints
-├── assets/         # Recursos estáticos
-├── components/     # Componentes reutilizables
-├── context/        # Context API (autenticación, usuario)
-├── layouts/        # Estructura general de las vistas
-├── pages/          # Vistas principales del sistema
-├── routes/         # Rutas públicas y privadas
-├── services/       # Servicios de consumo de API
-├── utils/          # Funciones auxiliares
-├── App.jsx
-└── main.jsx
 
 🔐 Seguridad
 
