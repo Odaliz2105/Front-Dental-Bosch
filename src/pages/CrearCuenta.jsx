@@ -437,7 +437,11 @@ export default function CrearCuenta() {
                   
                   <button
                     type="button"
-                    onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}paciente/auth/google`}
+                    onClick={() => {
+                      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'https://back-dental-bosch.onrender.com/api/';
+                      console.log('Redirigiendo a Google OAuth:', backendUrl + 'paciente/auth/google');
+                      window.location.href = backendUrl + 'paciente/auth/google';
+                    }}
                     className="w-full h-[38px] bg-white text-gray-700 font-semibold text-[1rem] rounded-[15px] border-2 border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">
