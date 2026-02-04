@@ -18,7 +18,7 @@ const DashboardPaciente = () => {
       
       // Cargar citas del paciente
       const token = authPaciente?.token;
-      const citasResponse = await fetch('http://localhost:4000/api/cita/paciente', {
+      const citasResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}cita/paciente`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'

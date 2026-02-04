@@ -9,7 +9,7 @@ import { FiClock } from "react-icons/fi";
 import dentalBosch8 from "../assets/DentalBosch.png";
 
 // CONFIGURACIÓN DE LA API
-const API_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:4000";
 const API_ENDPOINTS = {
   REGISTRO_DOCTOR: `${API_URL}/api/doctor/registro`,
   REGISTRO_PACIENTE: `${API_URL}/api/paciente/registro`,
@@ -437,7 +437,7 @@ export default function CrearCuenta() {
                   
                   <button
                     type="button"
-                    onClick={() => window.location.href = "http://localhost:4000/api/paciente/auth/google"}
+                    onClick={() => window.location.href = `${import.meta.env.VITE_BACKEND_URL}paciente/auth/google`}
                     className="w-full h-[38px] bg-white text-gray-700 font-semibold text-[1rem] rounded-[15px] border-2 border-gray-300 hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
                   >
                     <svg className="w-5 h-5" viewBox="0 0 24 24">

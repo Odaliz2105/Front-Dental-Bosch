@@ -55,7 +55,7 @@ const AgendarCita = () => {
     try {
       setLoading(true);
       // Cargar doctores reales desde el backend
-      const response = await fetch('http://localhost:4000/api/doctor/aprobados');
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}doctor/aprobados`);
       const data = await response.json();
       setDoctores(data);
       console.log('📋 Doctores cargados:', data);
