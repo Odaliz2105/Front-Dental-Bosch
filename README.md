@@ -55,7 +55,6 @@ El frontend sigue el patrón arquitectónico Modelo – Vista – Controlador (M
 -Esta arquitectura facilita la escalabilidad, mantenimiento y comprensión del sistema.
 
 <img width="399" height="280" alt="image" src="https://github.com/user-attachments/assets/ae8bd64a-98bf-48e4-8e63-db4cf63b8ed9" />
-<img width="399" height="280" alt="image" src="https://github.com/user-attachments/assets/ae8bd64a-98bf-48e4-8e63-db4cf63b8ed9" />
 
 
 🔐 Seguridad
