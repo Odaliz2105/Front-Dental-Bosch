@@ -20,8 +20,8 @@ El frontend permite a los doctores y pacientes interactuar con el sistema de for
 -Brindar una experiencia de usuario clara, responsiva y accesible.
 
 👥 Roles del sistema
-👩‍⚕️ Doctor
 
+👩‍⚕️ Doctor
 -Iniciar sesión y gestionar perfil.
 -Registrar y administrar pacientes.
 -Gestionar citas odontológicas.
@@ -29,7 +29,6 @@ El frontend permite a los doctores y pacientes interactuar con el sistema de for
 -Controlar inventario odontológico.
 
 🧑 Paciente
-
 -Iniciar sesión.
 -Visualizar citas programadas.
 -Consultar historial clínico y odontograma.
