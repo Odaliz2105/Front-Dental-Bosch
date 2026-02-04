@@ -4,31 +4,31 @@ import api from '../helpers/api.js';
 export const pacienteService = {
   // Login de paciente
   login: async (email, password) => {
-    const response = await api.post('/api/paciente/login', { email, password });
+    const response = await api.post('/paciente/login', { email, password });
     return response.data;
   },
 
   // Registro de paciente
   registro: async (datos) => {
-    const response = await api.post('/api/paciente/registro', datos);
+    const response = await api.post('/paciente/registro', datos);
     return response.data;
   },
 
   // Obtener perfil del paciente
   getPerfil: async () => {
-    const response = await api.get('/api/paciente/perfil');
+    const response = await api.get('/paciente/perfil');
     return response.data;
   },
 
   // Actualizar perfil del paciente
   actualizarPerfil: async (datos) => {
-    const response = await api.put('/api/paciente/perfil', datos);
+    const response = await api.put('/paciente/perfil', datos);
     return response.data;
   },
 
   // Actualizar contraseña del paciente
   actualizarPassword: async (id, datos) => {
-    const response = await api.put(`/api/paciente/actualizarpassword/${id}`, datos);
+    const response = await api.put(`/paciente/actualizarpassword/${id}`, datos);
     return response.data;
   }
 };
@@ -37,85 +37,85 @@ export const pacienteService = {
 export const doctorService = {
   // Login de doctor
   login: async (email, password) => {
-    const response = await api.post('/api/doctor/login', { email, password });
+    const response = await api.post('/doctor/login', { email, password });
     return response.data;
   },
 
   // Registro de doctor (queda pendiente de aprobación)
   registro: async (datos) => {
-    const response = await api.post('/api/doctor/registro', datos);
+    const response = await api.post('/doctor/registro', datos);
     return response.data;
   },
 
   // Obtener perfil del doctor
   getPerfil: async () => {
-    const response = await api.get('/api/doctor/perfil');
+    const response = await api.get('/doctor/perfil');
     return response.data;
   },
 
   // Actualizar perfil del doctor
   actualizarPerfil: async (datos) => {
-    const response = await api.put(`/api/doctor/actualizarperfil/${datos.id}`, datos);
+    const response = await api.put(`/doctor/actualizarperfil/${datos.id}`, datos);
     return response.data;
   },
 
   // Actualizar contraseña del doctor
   actualizarPassword: async (id, datos) => {
-    const response = await api.put(`/api/doctor/actualizarpassword/${id}`, datos);
+    const response = await api.put(`/doctor/actualizarpassword/${id}`, datos);
     return response.data;
   },
 
   // Recuperar contraseña
   recuperarPassword: async (email) => {
-    const response = await api.post('/api/doctor/recuperarPassword', { email });
+    const response = await api.post('/doctor/recuperarPassword', { email });
     return response.data;
   },
 
   // Comprobar token de recuperación
   comprobarTokenPassword: async (token) => {
-    const response = await api.get(`/api/doctor/recuperarPassword/${token}`);
+    const response = await api.get(`/doctor/recuperarPassword/${token}`);
     return response.data;
   },
 
   // Crear nueva contraseña
   crearNuevoPassword: async (token, password) => {
-    const response = await api.post(`/api/doctor/nuevoPassword/${token}`, { password });
+    const response = await api.post(`/doctor/nuevoPassword/${token}`, { password });
     return response.data;
   },
 
   // Confirmar email
   confirmarEmail: async (token) => {
-    const response = await api.get(`/api/doctor/confirmar/${token}`);
+    const response = await api.get(`/doctor/confirmar/${token}`);
     return response.data;
   },
 
   // Crear nuevo doctor (solo doctores aprobados)
   crearDoctor: async (datos) => {
-    const response = await api.post('/api/auth/crear-doctor', datos);
+    const response = await api.post('/auth/crear-doctor', datos);
     return response.data;
   },
 
   // Listar doctores pendientes de aprobación (solo doctores aprobados)
   listarDoctoresPendientes: async () => {
-    const response = await api.get('/api/auth/doctores-pendientes');
+    const response = await api.get('/auth/doctores-pendientes');
     return response.data;
   },
 
   // Aprobar doctor (solo doctores aprobados)
   aprobarDoctor: async (doctorId) => {
-    const response = await api.put(`/api/auth/aprobar-doctor/${doctorId}`);
+    const response = await api.put(`/auth/aprobar-doctor/${doctorId}`);
     return response.data;
   },
 
   // Rechazar doctor (solo doctores aprobados)
   rechazarDoctor: async (doctorId) => {
-    const response = await api.put(`/api/auth/rechazar-doctor/${doctorId}`);
+    const response = await api.put(`/auth/rechazar-doctor/${doctorId}`);
     return response.data;
   },
 
   // Promover paciente a doctor (solo doctores aprobados)
   promoverPaciente: async (pacienteId, datos) => {
-    const response = await api.put(`/api/auth/promover-paciente/${pacienteId}`, datos);
+    const response = await api.put(`/auth/promover-paciente/${pacienteId}`, datos);
     return response.data;
   }
 };
@@ -124,25 +124,25 @@ export const doctorService = {
 export const pacienteDoctorService = {
   // Listar todos los pacientes
   listarPacientes: async () => {
-    const response = await api.get('/api/paciente/');
+    const response = await api.get('/paciente/');
     return response.data;
   },
 
   // Crear nuevo paciente
   crearPaciente: async (datos) => {
-    const response = await api.post('/api/paciente/', datos);
+    const response = await api.post('/paciente/', datos);
     return response.data;
   },
 
   // Actualizar paciente
   actualizarPaciente: async (id, datos) => {
-    const response = await api.put(`/api/paciente/actualizar/${id}`, datos);
+    const response = await api.put(`/paciente/actualizar/${id}`, datos);
     return response.data;
   },
 
   // Eliminar paciente
   eliminarPaciente: async (id) => {
-    const response = await api.delete(`/api/paciente/eliminar/${id}`);
+    const response = await api.delete(`/paciente/eliminar/${id}`);
     return response.data;
   }
 };
@@ -151,37 +151,37 @@ export const pacienteDoctorService = {
 export const citasService = {
   // Listar citas del paciente
   listarCitasPaciente: async () => {
-    const response = await api.get('/api/cita/paciente');
+    const response = await api.get('/cita/paciente');
     return response.data;
   },
 
   // Crear nueva cita
   crearCita: async (datos) => {
-    const response = await api.post('/api/cita/crear', datos);
+    const response = await api.post('/cita/crear', datos);
     return response.data;
   },
 
   // Obtener cita por ID
   obtenerCita: async (id) => {
-    const response = await api.get(`/api/cita/${id}`);
+    const response = await api.get(`/cita/${id}`);
     return response.data;
   },
 
   // Cancelar cita
   cancelarCita: async (id) => {
-    const response = await api.put(`/api/cita/${id}/cancelar`);
+    const response = await api.put(`/cita/${id}/cancelar`);
     return response.data;
   },
 
   // Calificar cita
   calificarCita: async (id, datos) => {
-    const response = await api.put(`/api/cita/${id}/calificar`, datos);
+    const response = await api.put(`/cita/${id}/calificar`, datos);
     return response.data;
   },
 
   // Obtener horarios disponibles
   obtenerHorariosDisponibles: async (params = {}) => {
-    const response = await api.get('/api/cita/disponibles', { params });
+    const response = await api.get('/cita/disponibles', { params });
     return response.data;
   }
 };
@@ -190,37 +190,37 @@ export const citasService = {
 export const inventarioService = {
   // Listar items de inventario
   listarInventario: async (params = {}) => {
-    const response = await api.get('/api/inventario', { params });
+    const response = await api.get('/inventario', { params });
     return response.data;
   },
 
   // Crear nuevo item de inventario
   crearItemInventario: async (datos) => {
-    const response = await api.post('/api/inventario', datos);
+    const response = await api.post('/inventario', datos);
     return response.data;
   },
 
   // Obtener item de inventario por ID
   obtenerItemInventario: async (id) => {
-    const response = await api.get(`/api/inventario/${id}`);
+    const response = await api.get(`/inventario/${id}`);
     return response.data;
   },
 
   // Actualizar item de inventario
   actualizarItemInventario: async (id, datos) => {
-    const response = await api.put(`/api/inventario/${id}`, datos);
+    const response = await api.put(`/inventario/${id}`, datos);
     return response.data;
   },
 
   // Eliminar item de inventario
   eliminarItemInventario: async (id) => {
-    const response = await api.delete(`/api/inventario/${id}`);
+    const response = await api.delete(`/inventario/${id}`);
     return response.data;
   },
 
   // Actualizar stock (descontar cuando se asigna medicamento)
   actualizarStock: async (id, datos) => {
-    const response = await api.put(`/api/inventario/${id}/actualizar-stock`, datos);
+    const response = await api.put(`/inventario/${id}/actualizar-stock`, datos);
     return response.data;
   }
 };
