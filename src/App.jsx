@@ -24,6 +24,7 @@ import GestionCitas from './pages/doctor/GestionCitas';
 import ListarPacientes from './pages/doctor/ListarPacientes';
 import CrearPaciente from './pages/doctor/CrearPaciente';
 import ActualizarPaciente from './pages/doctor/ActualizarPaciente';
+import DetallePacienteDoctor from './pages/doctor/DetallePaciente';
 import Inventario from './pages/doctor/Inventario';
 import DoctorLayout from './components/doctor/DoctorLayout.jsx';
 
@@ -33,12 +34,20 @@ import DashboardPaciente from './pages/paciente/DashboardPaciente';
 import PerfilPaciente from './pages/paciente/PerfilPaciente';
 import AgendarCita from './pages/paciente/AgendarCita';
 import DetallePaciente from './pages/paciente/DetallePaciente';
+import CitasPaciente from './pages/paciente/CitasPaciente';
+import HistoriaClinica from './pages/paciente/HistoriaClinica';
+import PacienteLayout from './components/paciente/PacienteLayout';
 
 // Rutas protegidas Doctor
 const ProtectedDoctorRoute = ({ children }) => {
   const { authDoctor, loading } = useAuthDoctor();
   
+  console.log('ProtectedDoctorRoute - authDoctor:', authDoctor);
+  console.log('ProtectedDoctorRoute - loading:', loading);
+  console.log('ProtectedDoctorRoute - current path:', window.location.pathname);
+  
   if (loading) {
+    console.log('ProtectedDoctorRoute - Mostrando loading...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -47,9 +56,11 @@ const ProtectedDoctorRoute = ({ children }) => {
   }
   
   if (!authDoctor?.token) {
+    console.log('ProtectedDoctorRoute - No hay token, redirigiendo a /login');
     return <Navigate to="/login" replace />;
   }
   
+  console.log('ProtectedDoctorRoute - Token válido, renderizando children');
   return children;
 };
 
@@ -57,7 +68,11 @@ const ProtectedDoctorRoute = ({ children }) => {
 const ProtectedPacienteRoute = ({ children }) => {
   const { authPaciente, loading } = useAuthPaciente();
   
+  console.log('🔍 ProtectedPacienteRoute - authPaciente:', authPaciente);
+  console.log('🔍 ProtectedPacienteRoute - loading:', loading);
+  
   if (loading) {
+    console.log('⏳ ProtectedPacienteRoute - Mostrando loading...');
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
@@ -66,8 +81,13 @@ const ProtectedPacienteRoute = ({ children }) => {
   }
   
   if (!authPaciente?.token || authPaciente.paciente?.rol !== 'paciente') {
+    console.log('❌ ProtectedPacienteRoute - No autenticado, redirigiendo a login');
+    console.log('❌ Token:', authPaciente?.token);
+    console.log('❌ Rol:', authPaciente?.paciente?.rol);
     return <Navigate to="/paciente/login" replace />;
   }
+  
+  console.log('✅ ProtectedPacienteRoute - Autenticado correctamente');
   return children;
 };
 
@@ -149,7 +169,7 @@ const AppContent = () => {
             <Route index element={<ListarPacientes />} />
           </Route>
           
-          <Route path="/crear-paciente" element={
+          <Route path="/doctor/pacientes/crear" element={
             <ProtectedDoctorRoute>
               <DoctorLayout />
             </ProtectedDoctorRoute>
@@ -157,12 +177,20 @@ const AppContent = () => {
             <Route index element={<CrearPaciente />} />
           </Route>
           
-          <Route path="/paciente/actualizar/:id" element={
+          <Route path="/doctor/pacientes/actualizar/:id" element={
             <ProtectedDoctorRoute>
               <DoctorLayout />
             </ProtectedDoctorRoute>
           }>
             <Route index element={<ActualizarPaciente />} />
+          </Route>
+          
+          <Route path="/doctor/pacientes/detalle/:id" element={
+            <ProtectedDoctorRoute>
+              <DoctorLayout />
+            </ProtectedDoctorRoute>
+          }>
+            <Route index element={<DetallePacienteDoctor />} />
           </Route>
           
           <Route path="/inventario" element={
@@ -173,39 +201,69 @@ const AppContent = () => {
             <Route index element={<Inventario />} />
           </Route>
 
-          {/* Rutas Paciente */}
+          {/* Rutas Paciente con Layout */}
+          <Route path="/dashboard-paciente" element={
+            <ProtectedPacienteRoute>
+              <PacienteLayout />
+            </ProtectedPacienteRoute>
+          }>
+            <Route index element={<DashboardPaciente />} />
+          </Route>
+          
           <Route
             path="/paciente/perfil"
             element={
               <ProtectedPacienteRoute>
-                <PerfilPaciente />
+                <PacienteLayout />
               </ProtectedPacienteRoute>
             }
-          />
+          >
+            <Route index element={<PerfilPaciente />} />
+          </Route>
+          
           <Route
             path="/paciente/agendar-cita"
             element={
               <ProtectedPacienteRoute>
-                <AgendarCita />
+                <PacienteLayout />
               </ProtectedPacienteRoute>
             }
-          />
+          >
+            <Route index element={<AgendarCita />} />
+          </Route>
+          
           <Route
-            path="/dashboard-paciente"
+            path="/paciente/citas"
             element={
               <ProtectedPacienteRoute>
-                <DashboardPaciente />
+                <PacienteLayout />
               </ProtectedPacienteRoute>
             }
-          />
+          >
+            <Route index element={<CitasPaciente />} />
+          </Route>
+          
+          <Route
+            path="/paciente/historia-clinica"
+            element={
+              <ProtectedPacienteRoute>
+                <PacienteLayout />
+              </ProtectedPacienteRoute>
+            }
+          >
+            <Route index element={<HistoriaClinica />} />
+          </Route>
+          
           <Route
             path="/paciente/detalle/:id"
             element={
               <ProtectedPacienteRoute>
-                <DetallePaciente />
+                <PacienteLayout />
               </ProtectedPacienteRoute>
             }
-          />
+          >
+            <Route index element={<DetallePaciente />} />
+          </Route>
 
           {/* Ruta por defecto */}
           <Route path="*" element={<Navigate to="/" replace />} />

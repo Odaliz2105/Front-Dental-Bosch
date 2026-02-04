@@ -44,11 +44,6 @@ const ActualizarPaciente = () => {
       console.error('Error al obtener paciente:', error);
       toast.error(error.response?.data?.msg || 'Error al cargar el paciente');
       setLoading(false);
-      
-      if (error.response?.status === 404) {
-        toast.error('Paciente no encontrado.');
-        navigate('/doctor/pacientes');
-      }
     }
   };
 

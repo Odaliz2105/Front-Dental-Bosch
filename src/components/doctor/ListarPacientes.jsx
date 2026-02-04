@@ -52,18 +52,29 @@ const ListarPacientes = () => {
     try {
       await pacienteDoctorService.eliminarPaciente(pacienteId);
       toast.success('Paciente dado de baja correctamente');
-      fetchPacientes(); // Recargar lista
+      
+      // Recargar directamente sin depender de hasLoaded
+      setLoading(true);
+      try {
+        const data = await pacienteDoctorService.listarPacientes();
+        setPacientes(data);
+      } catch (recargaError) {
+        console.error('Error al recargar:', recargaError);
+        toast.error('Error al recargar la lista');
+      } finally {
+        setLoading(false);
+      }
     } catch (error) {
       toast.error(error.response?.data?.msg || 'Error al dar de baja al paciente');
     }
   };
 
   const handleVerDetalle = (pacienteId) => {
-    navigate(`/doctor/pacientes/detalle/${pacienteId}`);
+    navigate(`/paciente/detalle/${pacienteId}`);
   };
 
   const handleActualizar = (pacienteId) => {
-    navigate(`/doctor/pacientes/actualizar/${pacienteId}`);
+    navigate(`/paciente/actualizar/${pacienteId}`);
   };
 
   if (loading) {
@@ -91,7 +102,7 @@ const ListarPacientes = () => {
                   className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500"
                 />
               </div>
-              <Button onClick={() => navigate('/doctor/pacientes/crear')}>
+              <Button onClick={() => navigate('/crear-paciente')}>
                 <FaPlus className="mr-2" />
                 Nuevo Paciente
               </Button>

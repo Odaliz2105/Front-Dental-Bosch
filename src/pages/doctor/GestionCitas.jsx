@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuthDoctor } from '../../context/storeAuth.jsx';
 import { citaService } from '../../services/citaService.js';
 import { toast } from 'react-toastify';
@@ -44,24 +44,27 @@ const GestionCitas = () => {
   });
 
   // Load citas
-  const loadCitas = async () => {
+  const loadCitas = useCallback(async () => {
     try {
       setLoading(true);
       const data = await citaService.listarCitasDoctor(filters);
-      setCitas(data);
+      console.log('📋 Doctor - Citas recibidas:', data);
+      
+      // El backend ahora devuelve { citas: [...] }
+      setCitas(data.citas || data);
     } catch (error) {
       console.error('Error al cargar citas:', error);
       toast.error('Error al cargar las citas');
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   useEffect(() => {
     if (authDoctor?.token) {
       loadCitas();
     }
-  }, [authDoctor?.token, filters]);
+  }, [authDoctor?.token, loadCitas]);
 
   // Handle edit
   const handleEdit = (cita) => {

@@ -19,21 +19,28 @@ export const AuthDoctorProvider = ({ children }) => {
   });
   const [loading, setLoading] = useState(true);
 
+  console.log('AuthDoctorProvider - Estado inicial:', authDoctor);
+
   const verificarToken = useCallback(async () => {
     const token = localStorage.getItem("token");
+    console.log('AuthDoctorProvider - Verificando token:', token ? 'existe' : 'no existe');
     
     if (token) {
       try {
         // Verificar token con el backend
+        console.log('AuthDoctorProvider - Verificando token con backend...');
         const data = await doctorService.getPerfil();
+        console.log('AuthDoctorProvider - Token válido, doctor:', data);
         setAuthDoctor({ token, doctor: data });
       } catch (error) {
-        console.error('Token inválido:', error);
+        console.error('AuthDoctorProvider - Token inválido:', error);
         localStorage.removeItem("token");
         localStorage.removeItem("doctor");
         setAuthDoctor({ token: null, doctor: null });
         toast.error('Sesión expirada, por favor inicia sesión nuevamente');
       }
+    } else {
+      console.log('AuthDoctorProvider - No hay token en localStorage');
     }
     setLoading(false); // Siempre ejecutar esto, haya token o no
   }, []);

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthPaciente } from '../../context/storeAuthPaciente.jsx';
+import { toast } from 'react-toastify';
 import dentalBosch from '../../assets/DentalBosch.png';
 
 const LoginPaciente = () => {
@@ -15,10 +16,17 @@ const LoginPaciente = () => {
     setLoading(true);
 
     try {
+      console.log('Iniciando login paciente con:', email);
       const result = await loginPaciente(email, password);
+      console.log('Resultado del login:', result);
       
       if (result.success) {
-        setTimeout(() => navigate('/dashboard-paciente'), 800);
+        console.log('Login exitoso, redirigiendo a /dashboard-paciente');
+        toast.success('¡Login exitoso! Redirigiendo...');
+        setTimeout(() => {
+          console.log('Ejecutando navegación a /dashboard-paciente');
+          navigate('/dashboard-paciente');
+        }, 1000);
       }
     } catch (err) {
       console.error("Error en login paciente:", err);
