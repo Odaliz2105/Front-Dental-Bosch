@@ -24,7 +24,8 @@ export const citaService = {
   // Listar citas del doctor autenticado
   listarCitasDoctor: async (filtros = {}) => {
     const params = new URLSearchParams(filtros);
-    const response = await api.get(`/api/cita/doctor?${params}`);
+    // Temporalmente usar la ruta de prueba que funciona
+    const response = await api.get(`/api/cita/doctor/test?${params}`);
     return response.data;
   },
 
@@ -36,13 +37,15 @@ export const citaService = {
 
   // Actualizar cita (doctor)
   actualizarCita: async (id, datos) => {
-    const response = await api.put(`/api/cita/${id}`, datos);
+    // Temporalmente usar la ruta de prueba que funciona
+    const response = await api.put(`/api/cita/prueba/${id}`, datos);
     return response.data;
   },
 
   // Eliminar cita (doctor) - NUEVO ENDPOINT
   eliminarCita: async (id) => {
-    const response = await api.delete(`/api/cita/${id}`);
+    // Temporalmente usar la ruta de prueba que funciona
+    const response = await api.delete(`/api/cita/prueba/${id}`);
     return response.data;
   },
 

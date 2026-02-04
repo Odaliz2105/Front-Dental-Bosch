@@ -78,11 +78,19 @@ const Inventario = () => {
   const fetchInventario = async () => {
     setLoading(true);
     try {
+      console.log('Obteniendo inventario...');
       const response = await inventarioService.listarInventario();
-      setItems(response.items || []);
+      console.log('Respuesta del servidor:', response);
+      
+      // Manejar diferentes formatos de respuesta
+      const itemsData = response.items || response.data || response || [];
+      console.log('Items procesados:', itemsData);
+      
+      setItems(itemsData);
     } catch (error) {
-      toast.error('Error al cargar el inventario');
-      console.error('Error:', error);
+      console.error('Error al cargar inventario:', error);
+      const errorMessage = error.response?.data?.msg || error.message || 'Error al cargar el inventario';
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -132,12 +140,15 @@ const Inventario = () => {
 
   const handleDelete = async (id) => {
     try {
+      console.log('Intentando eliminar item con ID:', id);
       await inventarioService.eliminarItemInventario(id);
       toast.success('Item eliminado correctamente');
       fetchInventario();
       setShowDeleteModal(null);
-    } catch {
-      toast.error('Error al eliminar el item');
+    } catch (error) {
+      console.error('Error completo al eliminar:', error);
+      const errorMessage = error.response?.data?.msg || error.message || 'Error al eliminar el item';
+      toast.error(errorMessage);
     }
   };
 
@@ -280,7 +291,10 @@ const Inventario = () => {
                         Editar
                       </button>
                       <button
-                        onClick={() => setShowDeleteModal(item._id)}
+                        onClick={() => {
+                          console.log('ID del item a eliminar:', item._id);
+                          setShowDeleteModal(item._id);
+                        }}
                         className="flex-1 bg-red-500 text-white px-3 py-2 rounded text-sm hover:bg-red-600 transition-colors flex items-center justify-center gap-1"
                       >
                         <FiTrash2 className="w-4 h-4" />

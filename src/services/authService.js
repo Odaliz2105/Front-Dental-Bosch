@@ -24,6 +24,12 @@ export const pacienteService = {
   actualizarPerfil: async (datos) => {
     const response = await api.put('/api/paciente/perfil', datos);
     return response.data;
+  },
+
+  // Actualizar contraseña del paciente
+  actualizarPassword: async (id, datos) => {
+    const response = await api.put(`/api/paciente/actualizarpassword/${id}`, datos);
+    return response.data;
   }
 };
 
@@ -137,6 +143,45 @@ export const pacienteDoctorService = {
   // Eliminar paciente
   eliminarPaciente: async (id) => {
     const response = await api.delete(`/api/paciente/eliminar/${id}`);
+    return response.data;
+  }
+};
+
+// Servicios para gestión de citas (usados por pacientes)
+export const citasService = {
+  // Listar citas del paciente
+  listarCitasPaciente: async () => {
+    const response = await api.get('/api/cita/paciente');
+    return response.data;
+  },
+
+  // Crear nueva cita
+  crearCita: async (datos) => {
+    const response = await api.post('/api/cita/crear', datos);
+    return response.data;
+  },
+
+  // Obtener cita por ID
+  obtenerCita: async (id) => {
+    const response = await api.get(`/api/cita/${id}`);
+    return response.data;
+  },
+
+  // Cancelar cita
+  cancelarCita: async (id) => {
+    const response = await api.put(`/api/cita/${id}/cancelar`);
+    return response.data;
+  },
+
+  // Calificar cita
+  calificarCita: async (id, datos) => {
+    const response = await api.put(`/api/cita/${id}/calificar`, datos);
+    return response.data;
+  },
+
+  // Obtener horarios disponibles
+  obtenerHorariosDisponibles: async (params = {}) => {
+    const response = await api.get('/api/cita/disponibles', { params });
     return response.data;
   }
 };

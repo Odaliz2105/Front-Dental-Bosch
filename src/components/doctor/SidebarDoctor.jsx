@@ -36,7 +36,7 @@ const SidebarDoctor = () => {
       icon: FiPlus,
       label: 'Crear Paciente',
       description: 'Agregar nuevo paciente',
-      path: '/crear-paciente',
+      path: '/doctor/pacientes/crear',
       color: 'text-purple-500'
     },
     {

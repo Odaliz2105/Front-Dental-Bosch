@@ -73,7 +73,7 @@ const Header = () => {
             className="flex items-center gap-2 md:gap-3 group transition-transform duration-300 hover:scale-105"
           >
             <img 
-              src="/imagenes/logo.png" 
+              src="/src/assets/DentalBosch.png" 
               alt="D'Bosch" 
               className="h-10 md:h-12 w-auto transition-transform duration-300 group-hover:rotate-3" 
             />

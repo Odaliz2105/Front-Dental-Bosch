@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuthPaciente } from "../../context/storeAuthPaciente.jsx";
-import { citaService } from "../../services/citaService.js";
+import { citasService } from "../../services/authService.js";
 import { Button, Card, Loading } from "../../components/ui/index.js";
 import {
   FaCalendarAlt,
@@ -19,30 +19,31 @@ const AgendarCita = () => {
 
   const [doctores, setDoctores] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingHorarios, setLoadingHorarios] = useState(false);
   const [step, setStep] = useState(1); // 1: seleccionar doctor, 2: seleccionar fecha/hora, 3: confirmar
 
-  // Form data
+  // Form data - paciente no elige duración
   const [formData, setFormData] = useState({
     doctor: "",
     fechaCita: "",
     horaCita: "",
     tipoConsulta: "consulta_general",
     motivo: "",
-    duracion: 30,
   });
 
   const [horariosDisponibles, setHorariosDisponibles] = useState([]);
+  const [horariosOcupados, setHorariosOcupados] = useState([]); // Para mostrar horarios no disponibles
   const [citaConfirmada, setCitaConfirmada] = useState(null);
 
-  // Tipos de consulta
+  // Tipos de consulta (según backend)
   const tiposConsulta = [
-    { value: "consulta_general", label: "Consulta General", duracion: 30 },
-    { value: "limpieza", label: "Limpieza Dental", duracion: 45 },
-    { value: "extraccion", label: "Extracción", duracion: 30 },
-    { value: "ortodoncia", label: "Ortodoncia", duracion: 60 },
-    { value: "blanqueamiento", label: "Blanqueamiento", duracion: 90 },
-    { value: "emergencia", label: "Emergencia", duracion: 30 },
-    { value: "otro", label: "Otro", duracion: 30 },
+    { value: "consulta_general", label: "Consulta General" },
+    { value: "limpieza", label: "Limpieza Dental" },
+    { value: "extraccion", label: "Extracción" },
+    { value: "ortodoncia", label: "Ortodoncia" },
+    { value: "blanqueamiento", label: "Blanqueamiento" },
+    { value: "emergencia", label: "Emergencia" },
+    { value: "otro", label: "Otro" },
   ];
 
   useEffect(() => {
@@ -52,73 +53,148 @@ const AgendarCita = () => {
 
   const cargarDoctores = async () => {
     try {
-      // Simulación - en una implementación real, llamaríamos a un endpoint para obtener doctores
-      const doctoresSimulados = [
-        {
-          _id: "1",
-          nombre: "Dr. Juan",
-          apellido: "Pérez",
-          especialidad: "General",
-        },
-        {
-          _id: "2",
-          nombre: "Dra. María",
-          apellido: "González",
-          especialidad: "Ortodoncia",
-        },
-        {
-          _id: "3",
-          nombre: "Dr. Carlos",
-          apellido: "Rodríguez",
-          especialidad: "Cirugía",
-        },
-      ];
-      setDoctores(doctoresSimulados);
+      setLoading(true);
+      // Cargar doctores reales desde el backend
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}doctor/aprobados`);
+      const data = await response.json();
+      setDoctores(data);
+      console.log('📋 Doctores cargados:', data);
     } catch (error) {
+      console.error('❌ Error al cargar doctores:', error);
       toast.error("Error al cargar los doctores");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDoctorChange = async (doctorId) => {
-    setFormData({ ...formData, doctor: doctorId });
+    setFormData({ ...formData, doctor: doctorId, fechaCita: "", horaCita: "" });
+    setHorariosDisponibles([]); // Limpiar horarios anteriores
     setStep(2);
   };
 
   const handleFechaChange = async (fecha) => {
-    setFormData({ ...formData, fechaCita: fecha });
+    setFormData({ ...formData, fechaCita: fecha, horaCita: "" });
+    setHorariosDisponibles([]); // Limpiar horarios anteriores
+    setHorariosOcupados([]); // Limpiar horarios ocupados
 
     if (formData.doctor && fecha) {
       try {
-        const response = await citaService.obtenerHorariosDisponibles(
-          formData.doctor,
-          fecha,
-        );
-        setHorariosDisponibles(response.horariosDisponibles || []);
+        setLoadingHorarios(true);
+        console.log('🔄 AgendarCita - Cargando horarios para doctor:', formData.doctor, 'fecha:', fecha);
+        
+        const response = await citasService.obtenerHorariosDisponibles({
+          doctor: formData.doctor,
+          fecha: fecha
+        });
+        
+        console.log('📅 AgendarCita - Horarios recibidos:', response);
+        
+        // Generar todos los horarios del día (8 AM - 6 PM)
+        const todosLosHorarios = [];
+        const horaInicio = 8;
+        const horaFin = 18;
+        
+        for (let hora = horaInicio; hora < horaFin; hora++) {
+          for (let minuto = 0; minuto < 60; minuto += 30) {
+            const fechaHora = new Date(fecha);
+            fechaHora.setHours(hora, minuto, 0, 0);
+            
+            todosLosHorarios.push({
+              fecha: fechaHora,
+              horaString: fechaHora.toLocaleTimeString("es-ES", {
+                hour: "2-digit",
+                minute: "2-digit",
+              }),
+              disponible: false // Por defecto no disponible
+            });
+          }
+        }
+        
+        // Marcar como disponibles los horarios que vienen del backend
+        const disponibles = response.horariosDisponibles || [];
+        disponibles.forEach(horarioDisponible => {
+          const index = todosLosHorarios.findIndex(h => 
+            new Date(h.fecha).getTime() === new Date(horarioDisponible.fecha).getTime()
+          );
+          if (index !== -1) {
+            todosLosHorarios[index].disponible = true;
+          }
+        });
+        
+        // Separar disponibles y ocupados
+        const disponiblesFiltrados = todosLosHorarios.filter(h => h.disponible);
+        const ocupadosFiltrados = todosLosHorarios.filter(h => !h.disponible);
+        
+        setHorariosDisponibles(disponiblesFiltrados);
+        setHorariosOcupados(ocupadosFiltrados);
+        
       } catch (error) {
+        console.error('❌ AgendarCita - Error al cargar horarios:', error);
         toast.error("Error al cargar horarios disponibles");
         setHorariosDisponibles([]);
+        setHorariosOcupados([]);
+      } finally {
+        setLoadingHorarios(false);
       }
     }
   };
 
   const handleHorarioSelect = (horario) => {
+    console.log('🕐 AgendarCita - Horario seleccionado:', horario);
+    console.log('🕐 AgendarCita - Hora formateada:', horario.horaString);
+    
     setFormData({
       ...formData,
-      horaCita: new Date(horario.fecha).toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      horaCita: horario.horaString,
     });
+    
+    console.log('🔄 AgendarCita - Cambiando al paso 3');
     setStep(3);
   };
 
   const handleTipoConsultaChange = (tipo) => {
-    const tipoSeleccionado = tiposConsulta.find((t) => t.value === tipo);
     setFormData({
       ...formData,
       tipoConsulta: tipo,
-      duracion: tipoSeleccionado.duracion,
     });
+  };
+
+  const handleConfirmarCita = async () => {
+    try {
+      setLoading(true);
+      console.log('🔄 AgendarCita - Creando cita con datos:', formData);
+      
+      // Validar campos requeridos según backend
+      if (!formData.doctor || !formData.fechaCita || !formData.motivo) {
+        toast.error("Debes seleccionar un doctor, fecha y motivo");
+        return;
+      }
+      
+      // Crear objeto con fecha y hora combinados
+      const fechaHora = new Date(`${formData.fechaCita}T${formData.horaCita}`);
+      
+      const citaData = {
+        doctor: formData.doctor,
+        fechaCita: fechaHora.toISOString(),
+        tipoConsulta: formData.tipoConsulta,
+        motivo: formData.motivo.trim(),
+      };
+
+      console.log('📤 Enviando cita:', citaData);
+      
+      const response = await citasService.crearCita(citaData);
+      console.log('✅ AgendarCita - Cita creada:', response);
+      
+      setCitaConfirmada(response);
+      toast.success("¡Cita agendada exitosamente!");
+      setStep(3); // Mostrar confirmación
+    } catch (error) {
+      console.error('❌ AgendarCita - Error al crear cita:', error);
+      toast.error(error.response?.data?.msg || "Error al agendar cita");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -126,21 +202,7 @@ const AgendarCita = () => {
     setLoading(true);
 
     try {
-      // Combinar fecha y hora
-      const fechaHora = new Date(`${formData.fechaCita}T${formData.horaCita}`);
-
-      // Usar el nuevo endpoint con el formato correcto
-      const citaData = {
-        pacienteId: authPaciente.paciente._id,
-        motivo: formData.motivo,
-        fecha: fechaHora.toISOString(),
-      };
-
-      const response = await citaService.crearCitaPaciente(citaData);
-      setCitaConfirmada(response);
-      toast.success("¡Cita agendada exitosamente!");
-    } catch (error) {
-      toast.error(error.response?.data?.msg || "Error al agendar la cita");
+      await handleConfirmarCita();
     } finally {
       setLoading(false);
     }
@@ -163,7 +225,7 @@ const AgendarCita = () => {
         `Motivo: ${formData.motivo}\n\n` +
         `Gracias por su atención.`;
 
-      const whatsappUrl = `https://wa.me/593987654321?text=${encodeURIComponent(mensaje)}`;
+      const whatsappUrl = `https://wa.me/593984062668?text=${encodeURIComponent(mensaje)}`;
       window.open(whatsappUrl, "_blank");
     }
   };
@@ -217,29 +279,66 @@ const AgendarCita = () => {
         />
       </div>
 
-      {horariosDisponibles.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">
-            <FaClock className="inline mr-2" />
-            Horarios Disponibles
-          </h3>
-          <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
-            {horariosDisponibles.map((horario, index) => (
-              <Button
-                key={index}
-                onClick={() => handleHorarioSelect(horario)}
-                variant="primary"
-                size="sm"
-                className="w-full"
-              >
-                {new Date(horario.fecha).toLocaleTimeString("es-ES", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </Button>
-            ))}
-          </div>
+      {loadingHorarios ? (
+        <div className="text-center py-4">
+          <Loading size="sm" />
+          <p className="text-sm text-gray-600 mt-2">Cargando horarios disponibles...</p>
         </div>
+      ) : (
+        <>
+          {/* Horarios Disponibles */}
+          {horariosDisponibles.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-green-700 mb-4">
+                <FaClock className="inline mr-2" />
+                Horarios Disponibles
+              </h3>
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                {horariosDisponibles.map((horario, index) => (
+                  <Button
+                    key={`disponible-${index}`}
+                    onClick={() => handleHorarioSelect(horario)}
+                    variant="primary"
+                    size="sm"
+                    className="w-full bg-green-600 hover:bg-green-700 text-white"
+                  >
+                    {horario.horaString}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Horarios Ocupados */}
+          {horariosOcupados.length > 0 && (
+            <div>
+              <h3 className="text-lg font-semibold text-red-700 mb-4">
+                <FaClock className="inline mr-2" />
+                Horarios Ocupados
+              </h3>
+              <div className="grid grid-cols-3 md:grid-cols-4 gap-3">
+                {horariosOcupados.map((horario, index) => (
+                  <Button
+                    key={`ocupado-${index}`}
+                    variant="secondary"
+                    size="sm"
+                    className="w-full bg-red-100 text-red-700 border-red-300 cursor-not-allowed"
+                    disabled
+                  >
+                    {horario.horaString}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Mensaje si no hay horarios */}
+          {horariosDisponibles.length === 0 && horariosOcupados.length === 0 && formData.fechaCita && (
+            <div className="text-center py-4">
+              <p className="text-sm text-gray-600">No hay horarios disponibles para esta fecha</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
@@ -261,10 +360,13 @@ const AgendarCita = () => {
           >
             {tiposConsulta.map((tipo) => (
               <option key={tipo.value} value={tipo.value}>
-                {tipo.label} ({tipo.duracion} min)
+                {tipo.label}
               </option>
             ))}
           </select>
+          <p className="text-xs text-gray-500 mt-1">
+            * La duración será asignada automáticamente por el doctor
+          </p>
         </div>
 
         <div>
@@ -302,7 +404,6 @@ const AgendarCita = () => {
                   ?.label
               }
             </p>
-            <p>Duración: {formData.duracion} minutos</p>
           </div>
         </div>
 
@@ -423,11 +524,14 @@ const AgendarCita = () => {
 
             {/* Content */}
             {!citaConfirmada
-              ? step === 1
-                ? renderStep1()
-                : step === 2
-                  ? renderStep2()
-                  : renderStep3()
+              ? (() => {
+                  console.log('🎬 AgendarCita - Renderizando paso:', step);
+                  return step === 1
+                    ? renderStep1()
+                    : step === 2
+                      ? renderStep2()
+                      : renderStep3();
+                })()
               : renderConfirmacion()}
           </Card.Body>
         </Card>

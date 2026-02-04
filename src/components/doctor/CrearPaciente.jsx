@@ -29,22 +29,10 @@ const CrearPaciente = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Verificar que el doctor esté autenticado
-    if (!authDoctor?.token) {
-      toast.error('No estás autenticado. Por favor inicia sesión nuevamente.');
-      navigate('/login');
-      return;
-    }
-    
     setLoading(true);
 
     try {
-      console.log('Creando paciente con datos:', formData);
-      console.log('Token del doctor:', authDoctor?.token);
-      
       const data = await pacienteDoctorService.crearPaciente(formData);
-      console.log('Respuesta del servidor:', data);
 
       toast.success('Paciente creado correctamente');
       setFormData({
@@ -60,23 +48,10 @@ const CrearPaciente = () => {
       setLoading(false);
       
       // Redirigir al listado
-      console.log('Redirigiendo a /doctor/pacientes');
       navigate('/doctor/pacientes');
       
     } catch (error) {
-      console.error('Error completo al crear paciente:', error);
-      
-      // Manejar específicamente el error 401
-      if (error.response?.status === 401) {
-        toast.error('Tu sesión ha expirado. Por favor inicia sesión nuevamente.');
-        setTimeout(() => {
-          navigate('/login');
-        }, 2000);
-      } else {
-        const errorMessage = error.response?.data?.msg || error.message || 'Error al crear paciente';
-        toast.error(errorMessage);
-      }
-      
+      toast.error(error.response?.data?.msg || 'Error al crear paciente');
       setLoading(false);
     }
   };
