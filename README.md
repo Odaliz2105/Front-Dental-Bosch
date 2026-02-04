@@ -1,16 +1,112 @@
-# React + Vite
+🦷 Sistema Web Odontológico – Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Consultorio Dental Bosch
 
-Currently, two official plugins are available:
+📌 Descripción del proyecto
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Este repositorio contiene el componente frontend del Sistema Web Odontológico Dental Bosch, desarrollado como parte del Proyecto de Integración Curricular para la obtención del título de Tecnóloga en Desarrollo de Software.
 
-## React Compiler
+El frontend permite a los doctores y pacientes interactuar con el sistema de forma intuitiva, segura y eficiente, facilitando la gestión de pacientes, historias clínicas, odontogramas, citas e inventario odontológico, mediante el consumo de servicios REST proporcionados por el backend.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Expanding the ESLint configuration
+🎯 Objetivo del frontend
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+-Desarrollar una interfaz web moderna que permita:
+-Gestionar pacientes y sus historias clínicas.
+-Visualizar y registrar odontogramas digitales.
+-Administrar citas odontológicas.
+-Controlar el inventario de insumos odontológicos.
+-Consumir endpoints del backend de forma segura.
+-Brindar una experiencia de usuario clara, responsiva y accesible.
+
+👥 Roles del sistema
+👩‍⚕️ Doctor
+
+-Iniciar sesión y gestionar perfil.
+-Registrar y administrar pacientes.
+-Gestionar citas odontológicas.
+-Registrar tratamientos y odontogramas.
+-Controlar inventario odontológico.
+
+🧑 Paciente
+
+-Iniciar sesión.
+-Visualizar citas programadas.
+-Consultar historial clínico y odontograma.
+-Cancelar y calificar citas.
+
+🛠️ Tecnologías utilizadas
+Herramienta	Descripción
+React JS	Biblioteca para la construcción de interfaces de usuario basadas en componentes
+Vite	Herramienta de desarrollo rápida para proyectos React
+JavaScript (ES6+)	Lenguaje principal del frontend
+Tailwind CSS	Framework de estilos utilitarios para interfaces responsivas
+Axios	Cliente HTTP para consumo de APIs REST
+React Router DOM	Manejo de rutas públicas y privadas
+React Toastify	Notificaciones visuales para el usuario
+Lucide React / React Icons	Iconografía del sistema
+
+🧱 Arquitectura
+El frontend sigue el patrón arquitectónico Modelo – Vista – Controlador (MVC) adaptado a React:
+
+-Modelo: Gestión del estado y datos consumidos desde el backend.
+-Vista: Componentes visuales (interfaces y pantallas).
+-Controlador: Lógica de interacción, consumo de endpoints y validaciones.
+-Esta arquitectura facilita la escalabilidad, mantenimiento y comprensión del sistema.
+
+<img width="399" height="280" alt="image" src="https://github.com/user-attachments/assets/ae8bd64a-98bf-48e4-8e63-db4cf63b8ed9" />
+
+
+🔐 Seguridad
+
+Autenticación mediante JWT.
+
+Protección de rutas privadas según rol.
+
+Validaciones de formularios.
+
+Manejo seguro de sesiones.
+
+⚙️ Instalación y ejecución
+1️⃣ Clonar el repositorio
+git clone https://github.com/usuario/dental-bosch-frontend.git
+
+2️⃣ Instalar dependencias
+npm install
+
+3️⃣ Ejecutar en entorno de desarrollo
+npm run dev
+
+
+El proyecto se ejecutará en:
+
+http://localhost:5173
+
+🌐 Variables de entorno
+
+Crear un archivo .env en la raíz del proyecto:
+
+VITE_API_URL=http://localhost:4000/api
+
+🧪 Pruebas
+
+Se realizaron pruebas:
+
+Funcionales
+De aceptación
+De compatibilidad entre navegadores
+De rendimiento básico
+Los resultados se documentan en los Anexos del proyecto de titulación.
+
+🚀 Despliegue
+
+El frontend fue desplegado en un entorno web utilizando plataformas modernas de despliegue continuo, garantizando accesibilidad, rendimiento y estabilidad.
+
+📄 Contexto académico
+Este proyecto forma parte del Trabajo de Titulación de la carrera de Tecnología en Desarrollo de Software, aplicando metodologías ágiles (SCRUM) y buenas prácticas de ingeniería de software.
+
+✍️ Autora
+
+Aracely
+Tecnología en Desarrollo de Software
+Proyecto de Integración Curricular – Frontend
